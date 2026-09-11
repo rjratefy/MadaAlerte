@@ -2,10 +2,7 @@ package mg.etat.madaalerte.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
-
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+val MalagasyRed = Color(0xFFCE1126)     // Rouge officiel drapeau
+val MalagasyGreen = Color(0xFF007A3D)   // Vert officiel drapeau
+val MalagasyDark = Color(0xFF1E1E1E)    // Noir texturé institutionnel
+val MalagasySurface = Color(0xFFF8F9FA) // Blanc cassé pro pour les fonds de cartes
