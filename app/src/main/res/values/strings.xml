@@ -1,3 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">MadaAlerte</string>
+    <string name="app_name">Mada-Alerte</string>
+    <string name="espace_officiel">ESPACE OFFICIEL</string>
+    <string name="mada_alerte">MADA-ALERTE</string>
+    <string name="notice_utilisation">Notice officielle : Cette application permet aux citoyens de signaler à l’État malagasy les dégradations d’infrastructures publiques, les incidents ou toute autre situation nécessitant l’intervention des services publics. Exemple : route dégradée, éclairage public en panne, canalisation bouchée, dépôt sauvage d’ordures ou situation dangereuse. Chaque signalement peut être géolocalisé et faire l’objet d’un suivi. Toute fausse alerte, déclaration volontairement trompeuse ou utilisation abusive du service peut être tracée et exposer son auteur aux sanctions prévues par la législation en vigueur.</string>    <string name="identification_citoyen">Identification Citoyen</string>
+    <string name="numero_telephone">Numéro de téléphone</string>
+    <string name="nom_prenom">Nom et Prénom</string>
+    <string name="adresse_email">Adresse Email</string>
+    <string name="acceder_service">ACCÉDER AU SERVICE</string>
+    <string name="agent_etat">Je suis un agent de l\'État</string>
+    <string name="citoyen_signaler">Je suis un citoyen (Signaler un problème)</string>
+    <string name="connexion_agent">Connexion Agent de l\'État</string>
+    <string name="code_acces">Code d\'accès Sécurisé</string>
+    <string name="connexion_securisee">CONNEXION SÉCURISÉE</string>
+    <string name="appel_urgence">APPEL D\'URGENCE (117)</string>
+    <string name="transmettre_etat">TRANSMETTRE À L\'ÉTAT</string>
+    <string name="valider_resolution">Valider la résolution</string>
+    <string name="fermer">Fermer</string>
+    <string name="retour">Retour</string>
+    <string name="type_probleme">Type de problème (ex: Lalan-dratsy)</string>
+    <string name="localisation_site">Localisation du site</string>
+    <string name="saisir_quartier">Saisissez ou choisissez le quartier</string>
+    <string name="description_detaillee">Description détaillée</string>
+    <string name="niveau_gravite">Niveau de gravité</string>
+    <string name="photo_preuve">PHOTO DE PREUVE</string>
+    <string name="cin_obligatoire">PHOTOGRAPHIER LA CIN (OBLIGATOIRE)</string>
+    <string name="cin_enregistree">CIN ENREGISTRÉE</string>
+    <string name="infrastructures">INFRASTRUCTURES</string>
+    <string name="citoyens">CITOYENS</string>
+    <string name="indicateurs_nationaux">Indicateurs Nationaux</string>
+    <string name="total">Total</string>
+    <string name="en_attente">En attente</string>
+    <string name="resolues">Résolues</string>
+    <string name="taux_reparation">Taux de réparation national :</string>
+    <string name="tous_les_dossiers">Tous les dossiers</string>
+    <string name="urgences_niv_5">Urgences Niv. 5</string>
+    <string name="fil_actualite">Fil d\'actualité des infrastructures</string>
+    <string name="zone">Zone :</string>
+    <string name="signale">Signalé</string>
+    <string name="fiche_intervention">Fiche d\'intervention</string>
+    <string name="identite_signaleur">IDENTITÉ DU SIGNALEUR</string>
+    <string name="citoyen_non_identifie">Citoyen non identifié</string>
+    <string name="quartier_coordonnees">Quartier et Coordonnées (Figés)</string>
+    <string name="ouvrir_carte">Ouvrir la vue cartographique</string>
+    <string name="aucune_description">Aucune description fournie.</string>
+    <string name="preuve_visuelle">Preuve visuelle du terrain :</string>
+    <string name="nouveau_signalement">Nouveau signalement</string>
+    <string name="citoyens_en_attente">Citoyens en attente de vérification</string>
+    <string name="aucun_profil">Aucun profil en attente.</string>
+    <string name="document_identite">Document d\'identité :</string>
+    <string name="valider_citoyen">VALIDER LE CITOYEN</string>
+    <string name="mes_signalements">Mes signalements</string>
+    <string name="marquer_doublon">Marquer comme Doublon</string>
+    <string name="statut_doublon">DOUBLON</string>
 </resources>

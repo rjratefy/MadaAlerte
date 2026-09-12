@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mada-Alerte</string>
+    <string name="espace_officiel">OFFICIAL SPACE</string>
+    <string name="mada_alerte">MADA-ALERTE</string>
+    <string name="notice_utilisation">Official Notice: This application allows citizens to report to the Malagasy State damaged public infrastructure, incidents, or any other situation requiring intervention by public services. Examples include damaged roads, malfunctioning public lighting, blocked drainage systems, illegal dumping, or dangerous situations. Each report may be geolocated and tracked throughout its processing. Any false report, intentionally misleading statement, or misuse of the service may be traceable and may expose the author to sanctions provided for under applicable law.</string>    <string name="identification_citoyen">Citizen Identification</string>
+    <string name="numero_telephone">Phone Number</string>
+    <string name="nom_prenom">Full Name</string>
+    <string name="adresse_email">Email Address</string>
+    <string name="acceder_service">ACCESS SERVICE</string>
+    <string name="agent_etat">I am a State Agent</string>
+    <string name="citoyen_signaler">I am a Citizen (Report an issue)</string>
+    <string name="connexion_agent">State Agent Login</string>
+    <string name="code_acces">Secure Access Code</string>
+    <string name="connexion_securisee">SECURE LOGIN</string>
+    <string name="appel_urgence">EMERGENCY CALL (117)</string>
+    <string name="transmettre_etat">SUBMIT TO STATE</string>
+    <string name="valider_resolution">Validate resolution</string>
+    <string name="fermer">Close</string>
+    <string name="retour">Back</string>
+    <string name="type_probleme">Type of problem (e.g. Bad road)</string>
+    <string name="localisation_site">Site location</string>
+    <string name="saisir_quartier">Enter or select the neighborhood</string>
+    <string name="description_detaillee">Detailed description</string>
+    <string name="niveau_gravite">Severity level</string>
+    <string name="photo_preuve">EVIDENCE PHOTO</string>
+    <string name="cin_obligatoire">TAKE A PHOTO OF ID CARD (REQUIRED)</string>
+    <string name="cin_enregistree">ID CARD REGISTERED</string>
+    <string name="mes_signalements">My reports</string>
+    <string name="marquer_doublon">Mark as Duplicate</string>
+    <string name="statut_doublon">DUPLICATE</string>
+</resources>

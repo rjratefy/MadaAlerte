@@ -15,17 +15,16 @@ interface AlerteDao {
     @Update
     suspend fun modifier(alerte: Alerte)
 
-    // La vraie valeur ajoutée : on trie par niveau de danger (le plus critique en 1er)
     @Query("SELECT * FROM alertes_table ORDER BY niveauDanger DESC, timestamp DESC")
     fun toutesLesAlertes(): Flow<List<Alerte>>
 
-    // Pour le Dashboard Admin : compter les alertes urgentes
     @Query("SELECT COUNT(*) FROM alertes_table WHERE statut = 'SIGNALEMENT REÇU'")
     fun compterAlertesEnAttente(): Flow<Int>
 
     @Query("SELECT COUNT(*) FROM alertes_table")
     fun compterTotalAlertes(): Flow<Int>
 
-    @Query("SELECT COUNT(*) FROM alertes_table WHERE statut = 'RÉSOLU'")
+    // Utilisation de LIKE pour garantir un comptage infaillible
+    @Query("SELECT COUNT(*) FROM alertes_table WHERE statut LIKE 'RÉSOLU%'")
     fun compterAlertesResolues(): Flow<Int>
 }

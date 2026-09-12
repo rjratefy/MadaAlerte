@@ -7,4 +7,10 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Couleurs officielles Mada-Alerte -->
+    <color name="malagasy_red">#CE1126</color>
+    <color name="malagasy_green">#007A3D</color>
+    <color name="malagasy_dark">#1E1E1E</color>
+    <color name="malagasy_surface">#F8F9FA</color>
 </resources>

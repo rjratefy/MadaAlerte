@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mada-Alerte</string>
+    <string name="espace_officiel">TOERANA OFISIALY</string>
+    <string name="mada_alerte">MADA-ALERTE</string>
+    <string name="notice_utilisation">Fampahafantarana ofisialy : Ity fampiharana ity dia ahafahan’ny olom-pirenena mampandre ny Fanjakana Malagasy momba ny fahasimban’ny fotodrafitrasa ho an’ny daholobe, ny tranga miseho na toe-javatra hafa izay mitaky fandraisan’andraikitry ny sampan-draharaham-panjakana. Ohatra : lalana simba, jiro ho an’ny daholobe tsy mandeha, tatatra tsentsina, fanariana fako tsy ara-dalàna na toe-javatra mampidi-doza. Ny tatitra tsirairay dia azo faritana amin’ny toerana misy azy ary azo arahina ny fivoarany. Ny fanaovana fanairana diso, fanomezana vaovao mamitaka an-tsitrapo na fampiasana tsy ara-dalàna ity tolotra ity dia azo arahina ary mety hitarika amin’ny sazy voalazan’ny lalàna manan-kery.</string>    <string name="identification_citoyen">Fijerena ny mombamomba</string>
+    <string name="numero_telephone">Laharana finday</string>
+    <string name="nom_prenom">Anarana sy Fanampiny</string>
+    <string name="adresse_email">Adiresy Mailaka</string>
+    <string name="acceder_service">HIDITRA AMIN\'NY SERASERA</string>
+    <string name="agent_etat">Mpiasan\'ny Fanjakana aho</string>
+    <string name="citoyen_signaler">Olom-pirenena aho (Mitory olana)</string>
+    <string name="connexion_agent">Fidiran\'ny Mpiasan\'ny Fanjakana</string>
+    <string name="code_acces">Kaodim-pisihana azo antoka</string>
+    <string name="connexion_securisee">FIDIRANA ANTOKA</string>
+    <string name="appel_urgence">FIANTSOANA VONJY MAIKA (117)</string>
+    <string name="transmettre_etat">AMPITAO AMIN\'NY FANJAKANA</string>
+    <string name="valider_resolution">Anarina ny vahaolana</string>
+    <string name="fermer">Hidio</string>
+    <string name="type_probleme">Karazana olana (ohatra: Lalan-dratsy)</string>
+    <string name="localisation_site">Toerana misy ny olana</string>
+    <string name="saisir_quartier">Soraty na safidio ny fokontany</string>
+    <string name="description_detaillee">Famaritana amin\'ny antsipiriany</string>
+    <string name="niveau_gravite">Hatramin\'ny loza</string>
+    <string name="photo_preuve">SARY POROFOM-PIHEVERANA</string>
+    <string name="cin_obligatoire">ALAHO SARY NY KARAPANONDRO (TSY MAINTSY)</string>
+    <string name="cin_enregistree">VOASORATRA NY KARAPANONDRO</string>
+    <string name="infrastructures">FOTO-DRAFITRASA</string>
+    <string name="citoyens">OLOM-PIRENENA</string>
+    <string name="indicateurs_nationaux">Antontan\'isa Nasionaly</string>
+    <string name="total">Fitambarany</string>
+    <string name="en_attente">Andrasana</string>
+    <string name="resolues">Voavaha</string>
+    <string name="taux_reparation">Taham-panamboarana nasionaly :</string>
+    <string name="tous_les_dossiers">Antontan-taratasy rehetra</string>
+    <string name="urgences_niv_5">Maika indrindra (Niv. 5)</string>
+    <string name="fil_actualite">Vaovao farany momba ny foto-drafitrasa</string>
+    <string name="zone">Toerana :</string>
+    <string name="signale">Nampandrenesina</string>
+    <string name="fiche_intervention">Taratasy fandraisana an-tanana</string>
+    <string name="identite_signaleur">MOMBAMOMBA NY MPITORY</string>
+    <string name="citoyen_non_identifie">Olom-pirenena tsy fantatra</string>
+    <string name="quartier_coordonnees">Fokontany sy Toerana (Rikitra)</string>
+    <string name="ouvrir_carte">Sokafy ny sarintany</string>
+    <string name="aucune_description">Tsy misy fanazavana fanampiny.</string>
+    <string name="preuve_visuelle">Sary manamarina :</string>
+    <string name="nouveau_signalement">Fampandrenesana vaovao</string>
+    <string name="citoyens_en_attente">Olom-pirenena andrasana fanamarinana</string>
+    <string name="aucun_profil">Tsy misy piraofila andrasana.</string>
+    <string name="document_identite">Karapanondro :</string>
+    <string name="valider_citoyen">HANAMARINA NY OLOM-PIRENENA</string>
+    <string name="mes_signalements">Ny fampandrenesako</string>
+    <!-- Pour le bouton "Retour" classique -->
+    <string name="retour">Miverina miala</string>
+
+    <!-- Pour marquer un signalement comme étant déjà signalé par un autre -->
+    <string name="marquer_doublon">Marihina fa miverina (repete)</string>
+
+    <!-- Le statut affiché sur la carte du doublon -->
+    <string name="statut_doublon">MIVERINA (REPETE)</string>
+</resources>

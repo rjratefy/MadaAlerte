@@ -29,3 +29,29 @@ abstract class AppDatabase : RoomDatabase() {
         }
     }
 }
+
+@Database(entities = [Alerte::class, Citoyen::class], version = 2, exportSchema = false)
+abstract class MadaAlerteDatabase : RoomDatabase() {
+
+    abstract fun alerteDao(): AlerteDao
+    abstract fun citoyenDao(): CitoyenDao // Ajout du DAO Citoyen
+
+    companion object {
+        @Volatile
+        private var INSTANCE: MadaAlerteDatabase? = null
+
+        fun getDatabase(context: Context): MadaAlerteDatabase {
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
+                    context.applicationContext,
+                    MadaAlerteDatabase::class.java,
+                    "mada_alerte_database"
+                )
+                    .fallbackToDestructiveMigration() // Empêche les crashs lors des mises à jour de la base !
+                    .build()
+                INSTANCE = instance
+                instance
+            }
+        }
+    }
+}

@@ -5,14 +5,21 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "alertes_table")
 data class Alerte(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val categorie: String,
     val description: String,
-    val localisation: String,
+
+    // Localisation séparée pour plus de précision
+    val coordonneesGps: String,
+    val quartierManuel: String, // Nouveau champ saisi par l'utilisateur
+
     val niveauDanger: Int,
-    val photoUri: String? = null, // Nouveau champ pour la preuve visuelle
-    val statut: String = "SIGNALEMENT REÇU",
+    val photoUri: String?,
+    val statut: String = "EN COURS",
+    val timestamp: Long = System.currentTimeMillis(),
     val synchronise: Boolean = false,
-    val timestamp: Long = System.currentTimeMillis()
+
+    // Traçabilité Citoyen (Anti-escroquerie)
+    val citoyenNom: String = "",
+    val citoyenTelephone: String = ""
 )
