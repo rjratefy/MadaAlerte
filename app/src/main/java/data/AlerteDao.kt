@@ -18,13 +18,13 @@ interface AlerteDao {
     @Query("SELECT * FROM alertes_table ORDER BY niveauDanger DESC, timestamp DESC")
     fun toutesLesAlertes(): Flow<List<Alerte>>
 
-    @Query("SELECT COUNT(*) FROM alertes_table WHERE statut = 'SIGNALEMENT REÇU'")
+    // --- CORRECTION ICI : On cherche 'EN ATTENTE' pour correspondre au ViewModel ---
+    @Query("SELECT COUNT(*) FROM alertes_table WHERE statut = 'EN ATTENTE'")
     fun compterAlertesEnAttente(): Flow<Int>
 
     @Query("SELECT COUNT(*) FROM alertes_table")
     fun compterTotalAlertes(): Flow<Int>
 
-    // Utilisation de LIKE pour garantir un comptage infaillible
     @Query("SELECT COUNT(*) FROM alertes_table WHERE statut LIKE 'RÉSOLU%'")
     fun compterAlertesResolues(): Flow<Int>
 }

@@ -5,36 +5,13 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [Alerte::class], version = 2, exportSchema = false) // Version passée à 2
-abstract class AppDatabase : RoomDatabase() {
-
-    abstract fun alerteDao(): AlerteDao
-
-    companion object {
-        @Volatile
-        private var INSTANCE: AppDatabase? = null
-
-        fun getDatabase(context: Context): AppDatabase {
-            return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    AppDatabase::class.java,
-                    "madaalerte_database"
-                )
-                    .fallbackToDestructiveMigration() // Évite les crashs et nettoie proprement si la structure change
-                    .build()
-                INSTANCE = instance
-                instance
-            }
-        }
-    }
-}
-
-@Database(entities = [Alerte::class, Citoyen::class], version = 2, exportSchema = false)
+// On passe à la version 3 et on ajoute la table CategorieAlerte
+@Database(entities = [Alerte::class, Citoyen::class, CategorieAlerte::class], version = 3, exportSchema = false)
 abstract class MadaAlerteDatabase : RoomDatabase() {
 
     abstract fun alerteDao(): AlerteDao
-    abstract fun citoyenDao(): CitoyenDao // Ajout du DAO Citoyen
+    abstract fun citoyenDao(): CitoyenDao
+    abstract fun categorieDao(): CategorieDao // Ajout du DAO Catégorie
 
     companion object {
         @Volatile
@@ -47,7 +24,7 @@ abstract class MadaAlerteDatabase : RoomDatabase() {
                     MadaAlerteDatabase::class.java,
                     "mada_alerte_database"
                 )
-                    .fallbackToDestructiveMigration() // Empêche les crashs lors des mises à jour de la base !
+                    .fallbackToDestructiveMigration() // Recrée la base proprement avec la nouvelle table
                     .build()
                 INSTANCE = instance
                 instance

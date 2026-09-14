@@ -7,8 +7,11 @@ import mg.etat.madaalerte.viewmodel.AlerteRepository
 class MadaAlerteApp : Application() {
     val database by lazy { MadaAlerteDatabase.getDatabase(this) }
 
-    // OBLIGATOIRE : On ajoute database.citoyenDao() ici
     val repository by lazy {
-        AlerteRepository(database.alerteDao(), database.citoyenDao())
+        AlerteRepository(
+            database.alerteDao(),
+            database.citoyenDao(),
+            database.categorieDao() // Le 3ème DAO manquant est ajouté ici
+        )
     }
 }

@@ -5,10 +5,13 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.text.format.DateUtils
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,10 +20,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Assessment
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.SearchOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -51,11 +56,8 @@ fun getTexteLangue(): String = when (Locale.getDefault().language) { "mg" -> "MG
 fun basculerLangue(context: Context) {
     val courante = Locale.getDefault().language
     val nouvelle = when (courante) { "fr" -> "mg"; "mg" -> "en"; else -> "fr" }
-
-    // Sauvegarder le choix
     val prefs = context.getSharedPreferences("prefs_mada", Context.MODE_PRIVATE)
     prefs.edit().putString("selected_lang", nouvelle).apply()
-
     val locale = Locale(nouvelle)
     Locale.setDefault(locale)
     val config = context.resources.configuration
@@ -70,17 +72,21 @@ fun basculerLangue(context: Context) {
 fun HomeScreen(viewModel: AlerteViewModel, navController: NavController, isAdmin: Boolean) {
     val context = LocalContext.current
 
-    // Alertes
     val alertesAdmin by viewModel.alertesFiltrees.collectAsState()
     val alertesCitoyen by viewModel.mesAlertes.collectAsState()
-    val listeAffichage = if (isAdmin) alertesAdmin else alertesCitoyen // ISOLATION DES COMPTES
+    val listeAffichage = if (isAdmin) alertesAdmin else alertesCitoyen
 
     val enAttente by viewModel.alertesEnAttente.collectAsState()
     val totalAlertes by viewModel.totalAlertes.collectAsState()
     val alertesResolues by viewModel.alertesResolues.collectAsState()
     val filtreActuel by viewModel.filtreUrgence.collectAsState()
+    val filtreCatActuel by viewModel.filtreCategorie.collectAsState()
     val citoyensEnAttente by viewModel.citoyensEnAttente.collectAsState()
+    val categories by viewModel.categories.collectAsState()
+    val stats by viewModel.statsCategories.collectAsState()
+
     var selectedTabIndex by remember { mutableStateOf(0) }
+    val langueCourante = Locale.getDefault().language
 
     Scaffold(
         topBar = {
@@ -91,14 +97,7 @@ fun HomeScreen(viewModel: AlerteViewModel, navController: NavController, isAdmin
                             Image(painter = painterResource(id = R.drawable.logo_mada), contentDescription = "Logo", modifier = Modifier.size(36.dp).padding(end = 8.dp))
                             Column {
                                 Text(if (isAdmin) stringResource(id = R.string.espace_officiel) else stringResource(id = R.string.mada_alerte), fontWeight = FontWeight.Bold)
-
-                                // AFFICHAGE DU PROFIL CONNECTÉ
-                                val profilActuel = if (isAdmin) {
-                                    "Agent habilité (État Malagasy)"
-                                } else {
-                                    val citoyen = viewModel.citoyenConnecte
-                                    if (citoyen != null) "${citoyen.nomPrenom} (${citoyen.telephone})" else "Citoyen"
-                                }
+                                val profilActuel = if (isAdmin) "Agent habilité (État)" else "${viewModel.citoyenConnecte?.nomPrenom ?: "Citoyen"}"
                                 Text(text = profilActuel, style = MaterialTheme.typography.bodySmall, color = Color.White.copy(alpha = 0.8f))
                             }
                         }
@@ -109,11 +108,9 @@ fun HomeScreen(viewModel: AlerteViewModel, navController: NavController, isAdmin
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(getTexteLangue(), color = Color.White, fontWeight = FontWeight.Bold)
                         }
-
                         if (isAdmin) {
                             IconButton(onClick = {
-                                val sendIntent = Intent().apply {
-                                    action = Intent.ACTION_SEND
+                                val sendIntent = Intent(Intent.ACTION_SEND).apply {
                                     putExtra(Intent.EXTRA_SUBJECT, "Rapport Infrastructures")
                                     putExtra(Intent.EXTRA_TEXT, "Total signalements : $totalAlertes")
                                     type = "text/plain"
@@ -130,8 +127,9 @@ fun HomeScreen(viewModel: AlerteViewModel, navController: NavController, isAdmin
 
                 if (isAdmin) {
                     TabRow(selectedTabIndex = selectedTabIndex, containerColor = MalagasyRed, contentColor = Color.White) {
-                        Tab(selected = selectedTabIndex == 0, onClick = { selectedTabIndex = 0 }, text = { Text(stringResource(id = R.string.infrastructures), fontWeight = FontWeight.Bold) })
-                        Tab(selected = selectedTabIndex == 1, onClick = { selectedTabIndex = 1 }, text = { Text("${stringResource(id = R.string.citoyens)} (${citoyensEnAttente.size})", fontWeight = FontWeight.Bold) })
+                        Tab(selected = selectedTabIndex == 0, onClick = { selectedTabIndex = 0 }, text = { Text(stringResource(id = R.string.infrastructures), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold) })
+                        Tab(selected = selectedTabIndex == 1, onClick = { selectedTabIndex = 1 }, text = { Text("${stringResource(id = R.string.citoyens)} (${citoyensEnAttente.size})", style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold) })
+                        Tab(selected = selectedTabIndex == 2, onClick = { selectedTabIndex = 2 }, text = { Text("Stats & Types", style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold) })
                     }
                 }
             }
@@ -144,50 +142,208 @@ fun HomeScreen(viewModel: AlerteViewModel, navController: NavController, isAdmin
             }
         }
     ) { paddingValues ->
-        if (isAdmin && selectedTabIndex == 1) {
-            LazyColumn(modifier = Modifier.fillMaxSize().padding(paddingValues).padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                item { Text(stringResource(id = R.string.citoyens_en_attente), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MalagasyDark); Spacer(modifier = Modifier.height(8.dp)) }
-                if (citoyensEnAttente.isEmpty()) item { Text(stringResource(id = R.string.aucun_profil), color = Color.Gray) }
-                items(citoyensEnAttente) { citoyen -> CitoyenCard(citoyen = citoyen, onValider = { viewModel.validerCitoyen(citoyen) }) }
+        when {
+            isAdmin && selectedTabIndex == 1 -> {
+                LazyColumn(modifier = Modifier.fillMaxSize().padding(paddingValues).padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    item { Text(stringResource(id = R.string.citoyens_en_attente), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MalagasyDark) }
+                    if (citoyensEnAttente.isEmpty()) item { Text(stringResource(id = R.string.aucun_profil), color = Color.Gray) }
+                    items(citoyensEnAttente) { citoyen -> CitoyenCard(citoyen = citoyen, onValider = { viewModel.validerCitoyen(citoyen) }) }
+                }
             }
-        } else {
-            LazyColumn(modifier = Modifier.fillMaxSize().padding(paddingValues).padding(horizontal = 16.dp), contentPadding = PaddingValues(vertical = 16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                if (isAdmin) {
-                    item {
-                        Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MalagasySurface), elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)) {
-                            Column(modifier = Modifier.padding(16.dp)) {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Icon(Icons.Default.Assessment, contentDescription = null, tint = MalagasyRed)
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Text(stringResource(id = R.string.indicateurs_nationaux), fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium, color = MalagasyDark)
+            isAdmin && selectedTabIndex == 2 -> {
+                // ONGLET 3 : STATISTIQUES ET CRUD INTELLIGENT
+                Column(modifier = Modifier.fillMaxSize().padding(paddingValues).verticalScroll(rememberScrollState()).padding(16.dp)) {
+                    Text("Répartition par type de problème", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MalagasyDark)
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MalagasySurface), elevation = CardDefaults.cardElevation(2.dp)) {
+                        PieChartStatistiques(stats = stats, modifier = Modifier.padding(16.dp))
+                    }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Text("Gestion des Catégories (Traductions)", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MalagasyDark)
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    var newFr by remember { mutableStateOf("") }
+                    var newMg by remember { mutableStateOf("") }
+                    var newEn by remember { mutableStateOf("") }
+
+                    Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = Color.White), elevation = CardDefaults.cardElevation(2.dp)) {
+                        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            OutlinedTextField(value = newFr, onValueChange = { newFr = it }, label = { Text("Nom Français") }, modifier = Modifier.fillMaxWidth(), singleLine = true)
+                            OutlinedTextField(value = newMg, onValueChange = { newMg = it }, label = { Text("Anarana Malagasy") }, modifier = Modifier.fillMaxWidth(), singleLine = true)
+                            OutlinedTextField(value = newEn, onValueChange = { newEn = it }, label = { Text("English Name") }, modifier = Modifier.fillMaxWidth(), singleLine = true)
+                            Button(
+                                onClick = {
+                                    viewModel.ajouterCategorie(newFr, newMg, newEn)
+                                    newFr = ""; newMg = ""; newEn = ""
+                                },
+                                modifier = Modifier.fillMaxWidth(), colors = ButtonDefaults.buttonColors(containerColor = MalagasyDark),
+                                enabled = newFr.isNotBlank() && newMg.isNotBlank() && newEn.isNotBlank()
+                            ) { Text("Ajouter au système", color = Color.White) }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+                    categories.forEach { cat ->
+                        Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), colors = CardDefaults.cardColors(containerColor = MalagasySurface)) {
+                            Row(modifier = Modifier.padding(12.dp).fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(cat.nomFr, fontWeight = FontWeight.Bold, color = MalagasyDark)
+                                    Text("MG: ${cat.nomMg} | EN: ${cat.nomEn}", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
                                 }
-                                Spacer(modifier = Modifier.height(12.dp))
-                                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                    StatItem(label = stringResource(id = R.string.total), value = totalAlertes.toString(), color = MalagasyDark)
-                                    StatItem(label = stringResource(id = R.string.en_attente), value = enAttente.toString(), color = MalagasyRed)
-                                    StatItem(label = stringResource(id = R.string.resolues), value = alertesResolues.toString(), color = MalagasyGreen)
-                                }
-                                val tauxResolution = if (totalAlertes > 0) alertesResolues.toFloat() / totalAlertes.toFloat() else 0f
-                                Spacer(modifier = Modifier.height(24.dp))
-                                Text("${stringResource(id = R.string.taux_reparation)} ${(tauxResolution * 100).toInt()}%", style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold, color = MalagasyDark)
-                                Spacer(modifier = Modifier.height(6.dp))
-                                LinearProgressIndicator(progress = tauxResolution, modifier = Modifier.fillMaxWidth().height(8.dp).clip(RoundedCornerShape(4.dp)), color = MalagasyGreen, trackColor = MalagasyRed.copy(alpha = 0.2f))
+                                IconButton(onClick = { viewModel.supprimerCategorie(cat) }) { Icon(Icons.Default.Delete, contentDescription = "Supprimer", tint = MalagasyRed) }
                             }
                         }
                     }
-                    item {
-                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            FilterChip(selected = filtreActuel == 0, onClick = { viewModel.filtrerParNiveau(0) }, label = { Text(stringResource(id = R.string.tous_les_dossiers)) })
-                            FilterChip(selected = filtreActuel == 5, onClick = { viewModel.filtrerParNiveau(5) }, label = { Text(stringResource(id = R.string.urgences_niv_5)) })
+                    Spacer(modifier = Modifier.height(32.dp))
+                }
+            }
+            else -> {
+                LazyColumn(modifier = Modifier.fillMaxSize().padding(paddingValues).padding(horizontal = 16.dp), contentPadding = PaddingValues(vertical = 16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                    if (isAdmin) {
+                        item {
+                            Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MalagasySurface), elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)) {
+                                Column(modifier = Modifier.padding(16.dp)) {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Icon(Icons.Default.Assessment, contentDescription = null, tint = MalagasyRed)
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text(stringResource(id = R.string.indicateurs_nationaux), fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium, color = MalagasyDark)
+                                    }
+                                    Spacer(modifier = Modifier.height(12.dp))
+                                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                        StatItem(label = stringResource(id = R.string.total), value = totalAlertes.toString(), color = MalagasyDark)
+                                        StatItem(label = stringResource(id = R.string.en_attente), value = enAttente.toString(), color = MalagasyRed)
+                                        StatItem(label = stringResource(id = R.string.resolues), value = alertesResolues.toString(), color = MalagasyGreen)
+                                    }
+                                    val tauxResolution = if (totalAlertes > 0) alertesResolues.toFloat() / totalAlertes.toFloat() else 0f
+                                    Spacer(modifier = Modifier.height(24.dp))
+                                    Text("${stringResource(id = R.string.taux_reparation)} ${(tauxResolution * 100).toInt()}%", style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold, color = MalagasyDark)
+                                    Spacer(modifier = Modifier.height(6.dp))
+                                    LinearProgressIndicator(progress = tauxResolution, modifier = Modifier.fillMaxWidth().height(8.dp).clip(RoundedCornerShape(4.dp)), color = MalagasyGreen, trackColor = MalagasyRed.copy(alpha = 0.2f))
+                                }
+                            }
+                        }
+
+                        // --- BARRE DE FILTRES CORRIGÉE ---
+                        // --- BARRE DE FILTRES OPTIMISÉE (UX) ---
+                        item {
+                            Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                                // 1. Filtres d'urgence rapides
+                                Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
+                                    FilterChip(
+                                        selected = filtreActuel == 0 && filtreCatActuel == "Toutes",
+                                        onClick = { viewModel.reinitialiserFiltres() },
+                                        label = { Text("Tous les dossiers", fontWeight = FontWeight.Bold) },
+                                        colors = FilterChipDefaults.filterChipColors(selectedContainerColor = MalagasyDark, selectedLabelColor = Color.White)
+                                    )
+                                    FilterChip(
+                                        selected = filtreActuel == 5,
+                                        onClick = { if(filtreActuel == 5) viewModel.filtrerParNiveau(0) else viewModel.filtrerParNiveau(5) },
+                                        label = { Text(stringResource(id = R.string.urgences_niv_5)) },
+                                        colors = FilterChipDefaults.filterChipColors(selectedContainerColor = MalagasyRed, selectedLabelColor = Color.White)
+                                    )
+                                }
+
+                                // 2. Menu déroulant explicite pour les catégories
+                                var expandedFiltreCat by remember { mutableStateOf(false) }
+                                @Suppress("DEPRECATION")
+                                ExposedDropdownMenuBox(
+                                    expanded = expandedFiltreCat,
+                                    onExpandedChange = { expandedFiltreCat = !expandedFiltreCat }
+                                ) {
+                                    val texteAffiche = if (filtreCatActuel == "Toutes") "Toutes les catégories"
+                                    else categories.find { it.nomFr == filtreCatActuel }?.getNom(langueCourante) ?: filtreCatActuel
+
+                                    OutlinedTextField(
+                                        value = texteAffiche,
+                                        onValueChange = {},
+                                        readOnly = true,
+                                        label = { Text("Filtrer par type de problème") },
+                                        modifier = Modifier.menuAnchor().fillMaxWidth(),
+                                        colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(focusedBorderColor = MalagasyDark)
+                                    )
+                                    ExposedDropdownMenu(
+                                        expanded = expandedFiltreCat,
+                                        onDismissRequest = { expandedFiltreCat = false }
+                                    ) {
+                                        DropdownMenuItem(
+                                            text = { Text("Toutes les catégories", fontWeight = FontWeight.Bold) },
+                                            onClick = {
+                                                viewModel.filtrerParCategorie("Toutes")
+                                                expandedFiltreCat = false
+                                            }
+                                        )
+                                        categories.forEach { cat ->
+                                            DropdownMenuItem(
+                                                text = { Text(cat.getNom(langueCourante)) },
+                                                onClick = {
+                                                    viewModel.filtrerParCategorie(cat.nomFr)
+                                                    expandedFiltreCat = false
+                                                }
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        item { Text(stringResource(id = R.string.fil_actualite), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold) }
+                    } else {
+                        item { Text(stringResource(id = R.string.mes_signalements), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold) }
+                    }
+
+                    // --- LE MESSAGE D'ERREUR UX QUAND LA LISTE EST VIDE ---
+                    if (listeAffichage.isEmpty()) {
+                        item {
+                            Column(modifier = Modifier.fillMaxWidth().padding(32.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                                Icon(Icons.Default.SearchOff, contentDescription = null, modifier = Modifier.size(64.dp), tint = Color.LightGray)
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Text("Aucun dossier correspondant à ce filtre.", color = Color.Gray, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
+                            }
+                        }
+                    } else {
+                        items(listeAffichage) { alerte ->
+                            AlerteCard(alerte = alerte, onResoudre = { viewModel.resoudreAlerte(alerte) }, onDoublon = { viewModel.marquerCommeDoublon(alerte) }, isAdmin = isAdmin)
                         }
                     }
-                    item { Text(stringResource(id = R.string.fil_actualite), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold) }
-                } else {
-                    item { Text(stringResource(id = R.string.mes_signalements), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold) }
                 }
+            }
+        }
+    }
+}
 
-                items(listeAffichage) { alerte ->
-                    AlerteCard(alerte = alerte, onResoudre = { viewModel.resoudreAlerte(alerte) }, onDoublon = { viewModel.marquerCommeDoublon(alerte) }, isAdmin = isAdmin)
+// COMPOSANT CAMEMBERT NATIF
+@Composable
+fun PieChartStatistiques(stats: Map<String, Int>, modifier: Modifier = Modifier) {
+    val couleursPalette = listOf(MalagasyRed, MalagasyGreen, MalagasyDark, Color(0xFFF57C00), Color(0xFF1976D2), Color(0xFF8E24AA))
+    val total = stats.values.sum().toFloat()
+
+    if (total == 0f) {
+        Text("Aucune donnée disponible pour le graphique", color = Color.Gray, modifier = modifier)
+        return
+    }
+
+    Row(modifier = modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+        Canvas(modifier = Modifier.size(140.dp)) {
+            var startAngle = -90f
+            stats.values.forEachIndexed { index, count ->
+                val sweepAngle = (count / total) * 360f
+                drawArc(
+                    color = couleursPalette[index % couleursPalette.size],
+                    startAngle = startAngle,
+                    sweepAngle = sweepAngle,
+                    useCenter = true
+                )
+                startAngle += sweepAngle
+            }
+        }
+        Spacer(modifier = Modifier.width(24.dp))
+        Column {
+            stats.entries.forEachIndexed { index, entry ->
+                val pourcentage = ((entry.value / total) * 100).toInt()
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 4.dp)) {
+                    Box(modifier = Modifier.size(12.dp).background(couleursPalette[index % couleursPalette.size], RoundedCornerShape(2.dp)))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("${entry.key} ($pourcentage%)", style = MaterialTheme.typography.bodySmall, color = MalagasyDark, fontWeight = FontWeight.SemiBold)
                 }
             }
         }

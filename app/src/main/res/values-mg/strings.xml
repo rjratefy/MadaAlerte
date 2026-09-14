@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Mada-Alerte</string>
-    <string name="espace_officiel">TOERANA OFISIALY</string>
+    <string name="espace_officiel">FANJAKANA</string>
     <string name="mada_alerte">MADA-ALERTE</string>
     <string name="notice_utilisation">Fampahafantarana ofisialy : Ity fampiharana ity dia ahafahan’ny olom-pirenena mampandre ny Fanjakana Malagasy momba ny fahasimban’ny fotodrafitrasa ho an’ny daholobe, ny tranga miseho na toe-javatra hafa izay mitaky fandraisan’andraikitry ny sampan-draharaham-panjakana. Ohatra : lalana simba, jiro ho an’ny daholobe tsy mandeha, tatatra tsentsina, fanariana fako tsy ara-dalàna na toe-javatra mampidi-doza. Ny tatitra tsirairay dia azo faritana amin’ny toerana misy azy ary azo arahina ny fivoarany. Ny fanaovana fanairana diso, fanomezana vaovao mamitaka an-tsitrapo na fampiasana tsy ara-dalàna ity tolotra ity dia azo arahina ary mety hitarika amin’ny sazy voalazan’ny lalàna manan-kery.</string>    <string name="identification_citoyen">Fijerena ny mombamomba</string>
     <string name="numero_telephone">Laharana finday</string>
@@ -21,7 +21,7 @@
     <string name="localisation_site">Toerana misy ny olana</string>
     <string name="saisir_quartier">Soraty na safidio ny fokontany</string>
     <string name="description_detaillee">Famaritana amin\'ny antsipiriany</string>
-    <string name="niveau_gravite">Hatramin\'ny loza</string>
+    <string name="niveau_gravite">Hasarotan\'ny loza</string>
     <string name="photo_preuve">SARY POROFOM-PIHEVERANA</string>
     <string name="cin_obligatoire">ALAHO SARY NY KARAPANONDRO (TSY MAINTSY)</string>
     <string name="cin_enregistree">VOASORATRA NY KARAPANONDRO</string>
@@ -38,15 +38,15 @@
     <string name="zone">Toerana :</string>
     <string name="signale">Nampandrenesina</string>
     <string name="fiche_intervention">Taratasy fandraisana an-tanana</string>
-    <string name="identite_signaleur">MOMBAMOMBA NY MPITORY</string>
+    <string name="identite_signaleur">MOMBAMOMBA NY MPAMPANDRE</string>
     <string name="citoyen_non_identifie">Olom-pirenena tsy fantatra</string>
-    <string name="quartier_coordonnees">Fokontany sy Toerana (Rikitra)</string>
+    <string name="quartier_coordonnees">Fokontany sy Toerana </string>
     <string name="ouvrir_carte">Sokafy ny sarintany</string>
     <string name="aucune_description">Tsy misy fanazavana fanampiny.</string>
-    <string name="preuve_visuelle">Sary manamarina :</string>
+    <string name="preuve_visuelle">Sary fanamarinana :</string>
     <string name="nouveau_signalement">Fampandrenesana vaovao</string>
     <string name="citoyens_en_attente">Olom-pirenena andrasana fanamarinana</string>
-    <string name="aucun_profil">Tsy misy piraofila andrasana.</string>
+    <string name="aucun_profil">Tsy misy olona andrasana.</string>
     <string name="document_identite">Karapanondro :</string>
     <string name="valider_citoyen">HANAMARINA NY OLOM-PIRENENA</string>
     <string name="mes_signalements">Ny fampandrenesako</string>
